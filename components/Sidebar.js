@@ -3,10 +3,22 @@ import {
     HomeIcon, LibraryIcon, LogoutIcon, PlusCircleIcon, SearchIcon, ViewBoardsIcon,
 } from "@heroicons/react/outline"
 import { signOut, useSession } from 'next-auth/react';
+import { useEffect, useState } from "react";
+import useSpotify from "../hooks/useSpotify";
 
 function Sidebar() {
-
+    
+    const spotifyAPI = useSpotify()
     const {data: session, status} = useSession()
+    const [playlists, setPlaylists] = useState([])
+
+    useEffect(()=>{
+        if(spotifyAPI.getAccessToken()){
+            spotifyAPI.getUserPlaylists().then(data=>{
+                setPlaylists(data.body.items)
+            })
+        }
+    },[session,spotifyAPI])
 
   return (
     <div className='text-gray-500 p-5 text-sm border-r border-gray-900 overflow-y-scroll scrollbar-hide h-screen '>
@@ -46,19 +58,12 @@ function Sidebar() {
             </button>
 
             <hr className="border-t-[0.1px] border-gray-900" />
+
             {/* playlists */}
-            <p className="cursor-pointer hover:text-white">Playlist name...</p>
-            <p className="cursor-pointer hover:text-white">Playlist name...</p>
-            <p className="cursor-pointer hover:text-white">Playlist name...</p>
-            <p className="cursor-pointer hover:text-white">Playlist name...</p>
-            <p className="cursor-pointer hover:text-white">Playlist name...</p>
-            <p className="cursor-pointer hover:text-white">Playlist name...</p>
-            <p className="cursor-pointer hover:text-white">Playlist name...</p>
-            <p className="cursor-pointer hover:text-white">Playlist name...</p>
-            <p className="cursor-pointer hover:text-white">Playlist name...</p>
-            <p className="cursor-pointer hover:text-white">Playlist name...</p>
-            <p className="cursor-pointer hover:text-white">Playlist name...</p>
-            <p className="cursor-pointer hover:text-white">Playlist name...</p>
+            {playlists.map(playlist => (
+                <p key={playlist.id} className="cursor-pointer hover:text-white">{playlist.name}</p>
+            ))}
+
         </div>
     
     </div>

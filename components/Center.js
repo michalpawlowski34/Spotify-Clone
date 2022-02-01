@@ -20,7 +20,6 @@ function Center() {
     
     useEffect(()=>{
         setColor(shuffle(colors).pop())
-        console.log(colors)
     },[])
 
     return (
